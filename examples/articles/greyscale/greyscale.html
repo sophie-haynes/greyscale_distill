@@ -94,10 +94,10 @@
 
     <a class="marker" href="#section-experiments" id="section-experiments"><span>4</span></a>
     <h2>Experiments and Analysis</h2>
-    <p>While evaluations of the networks after fine-tuning will provide clear, quantitative results to determine the impact on classification performance, we want to deeply understand the underlying behaviour of the model and develop intuition as to why it works or does not. We believe this is an important step in developing reliable and trustworthy AI systems. As such, in this article, we spend extensive time analysing characteristics of the two pre-trained networks below.</p>
+    <p>While evaluations of the networks after fine-tuning will provide clear,  quantitative results to determine the impact on classification performance, we want to deeply understand the underlying behaviour of the model and develop intuition as to why it works or does not. We believe this is an essential step in developing reliable and trustworthy AI systems. As such, in this article, we spend extensive time analysing the characteristics of the two pre-trained networks below.</p>
     <a class="marker" href="#section-input-filters" id="section-input-filters"><span>4.1</span></a>
     <h3>First-Layer Feature Comparison</h3>
-    <p>To determine whether the fundamental building blocks of the two ImageNet networks differ, we visualised the first layer filters for each<d-cite bibtex-key="KrizhevskyAlex2012"></d-cite>.</p>
+    <p>To determine whether the fundamental building blocks of the two ImageNet networks differ, we visualised the first layer filters, as performed by Krizhevsky et al. (2012).<d-cite bibtex-key="KrizhevskyAlex2012"></d-cite></p>
     <figure class="">
       <d-figure id="fig-input-filters">
       <img src="images/first_layer_filters.svg">
@@ -106,7 +106,17 @@
         Input filters for the <em>Greyscale</em> (top) and <em>Colour</em> (bottom) ImageNet ResNet50 networks. Each set contains 64 filters of size 7x7x3. 
       </figcaption>
     </figure>
-    <p>The most immediate and visible difference between the first-layer filters of the RGB and greyscale pre-trained networks was the presence of color in the RGB filters. In contrast, the greyscale network filters were entirely devoid of color, as expected. When comparing the filters between the two networks, most could be mapped to each other, with the RGB network containing repeated filters in different colors. This suggests that the color model captures multiple redundant representations of the same pattern, just in different color variations.</p>
+    <p>The most immediate and visible difference between the first-layer filters of the RGB and greyscale pre-trained networks is the presence of colour in the RGB filters. In contrast, the greyscale network filters are entirely devoid of colour, as expected. However, surprisingly, over a quarter of the 64 greyscale filters are empty. In this state, it is unclear whether the filters between the networks are the same, with the colour features from the RGB model resulting in empty channels in the greyscale model, or whether the greyscale network managed to learn new filters in place of the colour filters.</p>
+    <p>To better understand the differences in filters between the networks, we attempted to pair up matching filters between the networks.</p>
+    <figure class="">
+      <d-figure id="fig-matched-filters">
+      <img src="images/filters_grouped_by_network.svg">
+      </d-figure>
+      <figcaption>
+        Manually mapped ImageNet filters between the <em>Greyscale</em> and <em>Colour</em> networks. 
+      </figcaption>
+    </figure>
+    <!-- <p>The most immediate and visible difference between the first-layer filters of the RGB and greyscale pre-trained networks was the presence of color in the RGB filters. In contrast, the greyscale network filters were entirely devoid of color, as expected. When comparing the filters between the two networks, most could be mapped to each other, with the RGB network containing repeated filters in different colors. This suggests that the color model captures multiple redundant representations of the same pattern, just in different color variations.</p> -->
     <p>An interesting observation was the number of empty filters present in the greyscale network. Out of the 64 filters, 16 were empty in the greyscale model, while the RGB network only contained one empty filter. Despite the reduced number of active filters, the greyscale network introduced new filter patterns that were not present in the RGB network, indicating that it captured different structural features.</p>
     <p>These visual differences in the first-layer filters suggest that the initial building blocks passed into the network differ significantly, even though both models were trained on the same ImageNet dataset. This suggests that the absence of color in the greyscale model forces the network to focus on different types of features, which could lead to learning more relevant domain-specific features in applications like medical image classification.</p>
 
