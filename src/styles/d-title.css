@@ -40,6 +40,20 @@ d-title h1 {
   }
 }
 
+d-title h2 {
+  grid-column: text;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+@media(min-width: 768px) {
+  d-title h2 {
+    font-size: 30px;
+  }
+}
+
 d-title p {
   font-weight: 300;
   font-size: 1.2rem;

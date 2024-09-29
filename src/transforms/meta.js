@@ -73,7 +73,7 @@ export default function(dom, data) {
     <meta property="og:url" content="${data.url}"/>
     <meta property="og:image" content="${data.previewURL}"/>
     <meta property="og:locale" content="en_US" />
-    <meta property="og:site_name" content="Distill" />
+    <meta property="og:site_name" content="Sophie Distill" />
   `);
 
   appendHead(`

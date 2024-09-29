@@ -23,7 +23,8 @@ const html = `
     line-height: 70px;
   }
 </style>
-<div>This article is a draft, awaiting review for publication in Distill</div>
+<!--<div>This article is a draft, awaiting review for publication in Distill</div>-->
+<div>This article is a draft, awaiting review for publication.</div>
 `;
 
 export default function(dom, data) {

@@ -1,0 +1,289 @@
+<!--
+  Copyright 2018 The Distill Template Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!doctype html>
+
+<head>
+  <script src="../../template.v2.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf8">
+</head>
+
+<body>
+  <distill-header></distill-header>
+  <d-front-matter>
+    <script id='distill-front-matter' type="text/json">{
+    "title": "From Colour to Grey: Exploring Transfer Learning for Medical Imagery",
+    "description": "Transfer learning has become standard practice for training effective computer vision models; however, the relevance of RGB ImageNet weights for greyscale targets such medical imagery is uncertain.",
+    "published": "Sept 30, 2024",
+    "authors": [
+      {
+        "author":"Sophie Crawford Haynes",
+        "authorURL":"https://scholar.google.com/citations?user=qoJcQhoAAAAJ",
+        "affiliations": [{"name": "Robert Gordon University"}]
+      }
+    ],
+    "katex": {
+      "delimiters": [
+        {"left": "$$", "right": "$$", "display": false}
+      ]
+    }
+  }</script>
+  </d-front-matter>
+  <d-title>
+    <figure style="grid-column: page; margin: 1rem 0;"><img src="images/filter_grouping.svg"
+        style="width:100%; border: 0px solid rgba(0, 0, 0, 0.2);" /></figure>
+    <!-- <p>We often think of Momentum<d-cite key="mercier2011humans"></d-cite> as a means of dampening oscillations and
+      speeding up the iterations, leading to faster convergence. But it has other interesting behavior. It allows a
+      larger range of step-sizes to be used, and creates its own oscillations. What is going on?</p> -->
+      <p>Transfer learning has become the de facto approach to neural network training, especially when data availability is low, and there is extensive evidence in the literature to support its efficacy. However, when transferring to unique domains, such as medical imagery, the relevance of generic pre-trained weights is dubious. Recent analyses of  COVID-19 CXR classifiers revealed their high-performance accuracy was often attributed to "shortcut learning" - reliant on spurious correlations in the data. In this work, we question whether better features can be obtained by better aligning the pre-training data with our target. Specifically, we focus on the challenge of learning disease from chest X-rays, a medium which does not contain colour features, and pathology tends to be indicated by variations in texture and intensity. Does removing colour as a learnable feature free up space in the network to learn more texture features? Does less neuron death occur when transfer learning from greyscale weights rather than colour weights? Do the fundamental building blocks of the network differ when colour is removed? Can the network learn a more robust representation from different weights? We explore these questions and aim to determine whether greyscale pre-training can significantly improve the capability of deep neural networks for medical imagery.</p>
+  </d-title>
+  <d-byline></d-byline>
+  <d-article>
+    <a class="marker" href="#section-introduction" id="section-introduction"><span>1</span></a>
+    <h2>Introduction</h2>
+    <p>Transfer learning, where a deep learning model is first trained on a vast dataset to learn fundamental tasks and then partially frozen and fine-tuned on a target dataset, has become the standard approach in many neural network training tasks. This is particularly useful when data availability is low, as the pre-trained model can leverage prior knowledge to improve performance. There is extensive evidence in the literature supporting the efficacy of this technique, particularly in overcoming data scarcity.</p>
+
+    <p>However, when applied to specialized domains like medical imaging, the relevance of generic pre-trained weights becomes questionable. Existing models, often pre-trained on RGB datasets like ImageNet, have been shown to perform poorly when transferred to medical image classification tasks. This misalignment raises concerns about reliability, with models often overfitting on limited training data, relying on spurious correlations, and showing a high risk of bias—rendering them unsuitable for clinical use.</p>
+
+    <p>In this study, we seek to improve the reliability of medical image classifiers by using pre-trained weights that are more closely aligned with the grayscale nature of medical imagery. Additionally, we explore interpretative methods to compare the network weights and gain insight into how different representations impact model performance. We hypothesize that the performance gains typically seen with RGB-based ImageNet weights do not transfer effectively to grayscale medical images due to significant differences in feature representations and the loss of color features, which can lead to extensive neuron death.</p>
+
+    <a class="marker" href="#section-method" id="section-method"><span>3</span></a>
+    <h2>Methodology</h2>
+    <p>For this study, we used the official PyTorch recipe to pre-train the greyscale ResNet50 model. ResNet50 was chosen due to its widespread use in medical image literature, where it has consistently demonstrated good performance. To create the greyscaled ImageNet-1K dataset, we modified the data loader to include a greyscale transformation before applying all other image transforms. Importantly, we preserved the three-channel structure in the greyscale images to ensure that the resulting models (color and greyscale) were maximally comparable.</p>
+
+    <h3>Model Pre-training and Fine-tuning</h3>
+    <p>ResNet50 models were pre-trained using the greyscaled ImageNet-1K dataset. Due to computational constraints, only the greyscale network was pre-trained from scratch, while the official pre-trained color ImageNet-1K weights were used for comparison. The training recipe used for the greyscale model was identical to that used for the official PyTorch ImageNet-1K weights.</p>
+
+    <!-- <p>We have planned the following fine-tuning strategies for the chest X-ray (CXR) nodule classification task, though the models have not yet been fine-tuned:
+
+    Final Layer Only: Replace the classification head with the target layer for CXR classification and freeze all other layers.
+    Half Network: Replace the classification head and unfreeze the last half of the network for fine-tuning.
+    Full Network: Replace the classification head and unfreeze the entire network for fine-tuning. -->
+  <!--   <h3>Experimental Design and Generalizability Evaluation</h3>
+    <p>To assess the generalizability of the pre-trained models, we designed an evaluation process using a CXR dataset composed of four distinct sub-datasets. The models were trained on one of the sub-datasets and tested across all four to evaluate their performance in unseen domains. Standard evaluation metrics were calculated, including accuracy, AUC, F1 score, precision, and recall. Additionally, bounding box annotations in the dataset were used to assess whether the models were identifying relevant pathological regions or relying on spurious correlations. This allowed us to explore whether the models exhibited shortcut learning.</p> -->
+
+    <h3>Control Experiment for Statistical Significance</h3>
+    <p>To account for possible differences in hardware or environment between the color and greyscale models, we conducted a control experiment using CIFAR datasets. In this toy experiment, both greyscale and color models were trained using the same setup, and weight differences between the two were compared using the Kolmogorov-Smirnov test. The results showed statistically significant differences between the distributions of the color and greyscale models, indicating that the fundamental differences observed are due to the color of the weights, not environmental factors. The Kruskal-Wallis test further confirmed that intra-group differences (within the color or greyscale models) were not statistically significant, while inter-group differences (between the color and greyscale models) were statistically significant.</p>
+    
+    <h3>Weight and Feature Analysis</h3>
+    <p>To further investigate differences between the color and greyscale networks, we generated heatmaps visualizing the differences in weights across the entire network. Three separate heatmaps were created to show differences in:
+    <ul>
+      <li>Convolutional layer weights.</li>
+      <li>Batch normalization weights.</li>
+      <li>Batch normalization biases.</li>
+    </ul>
+    <p>These heatmaps provided a layer-by-layer comparison, allowing us to pinpoint where the most significant differences occurred between the models.</p>
+
+    <p>We also performed a visual analysis of the input filters of each model to determine if the fundamental building blocks of the network differed. Each ResNet50 model contains 64 filters in the first layer, with dimensions of 7x7x3. We visualized these filters to compare their structure and found that color and greyscale models differed in their initial feature extraction.</p>
+
+    <h3>Class Activation and Representation Analysis</h3>
+    <p>Finally, we visualized the final layer outputs of the ImageNet models for various classes, using a method from Chris Olah et al., which generates outputs that maximize target neuron activations. This allowed us to observe visual differences in how the two models represented various ImageNet classes. Additionally, we calculated the mean layer activations to compare representational differences over the layers of each network, providing further insights into the depth of feature extraction differences.</p>
+
+    <a class="marker" href="#section-experiments" id="section-experiments"><span>4</span></a>
+    <h2>Experiments and Analysis</h2>
+    <p>While evaluations of the networks after fine-tuning will provide clear, quantitative results to determine the impact on classification performance, we want to deeply understand the underlying behaviour of the model and develop intuition as to why it works or does not. We believe this is an important step in developing reliable and trustworthy AI systems. As such, in this article, we spend extensive time analysing characteristics of the two pre-trained networks below.</p>
+    <a class="marker" href="#section-input-filters" id="section-input-filters"><span>4.1</span></a>
+    <h3>First-Layer Feature Comparison</h3>
+    <p>To determine whether the fundamental building blocks of the two ImageNet networks differ, we visualised the first layer filters for each<d-cite bibtex-key="KrizhevskyAlex2012"></d-cite>.</p>
+    <figure class="">
+      <d-figure id="fig-input-filters">
+      <img src="images/first_layer_filters.svg">
+      </d-figure>
+      <figcaption>
+        Input filters for the <em>Greyscale</em> (top) and <em>Colour</em> (bottom) ImageNet ResNet50 networks. Each set contains 64 filters of size 7x7x3. 
+      </figcaption>
+    </figure>
+    <p>The most immediate and visible difference between the first-layer filters of the RGB and greyscale pre-trained networks was the presence of color in the RGB filters. In contrast, the greyscale network filters were entirely devoid of color, as expected. When comparing the filters between the two networks, most could be mapped to each other, with the RGB network containing repeated filters in different colors. This suggests that the color model captures multiple redundant representations of the same pattern, just in different color variations.</p>
+    <p>An interesting observation was the number of empty filters present in the greyscale network. Out of the 64 filters, 16 were empty in the greyscale model, while the RGB network only contained one empty filter. Despite the reduced number of active filters, the greyscale network introduced new filter patterns that were not present in the RGB network, indicating that it captured different structural features.</p>
+    <p>These visual differences in the first-layer filters suggest that the initial building blocks passed into the network differ significantly, even though both models were trained on the same ImageNet dataset. This suggests that the absence of color in the greyscale model forces the network to focus on different types of features, which could lead to learning more relevant domain-specific features in applications like medical image classification.</p>
+
+    <h3>Heatmap Analysis of Weight Differences</h3>
+     
+    <p>Heatmaps comparing the weight differences between the two models further support the observation that the most significant differences occurred in the first layer. This finding is crucial because, in transfer learning, early layers are often frozen or fine-tuned with a very small learning rate. Therefore, the differences achieved by greyscaling the initial training weights would likely be unattainable through traditional fine-tuning, reinforcing the importance of domain-specific pre-training.</p>
+<figure class="">
+      <d-figure id="fig-heatmaps">
+      <img src="images/heatmap_weight_differences.png">
+      </d-figure>
+      <figcaption>
+         
+      </figcaption>
+    </figure>
+    <p>Additionally, the batch normalization weights and biases showed notable differences in the final layers, particularly in the third batch normalization block (batch norm 3). This suggests that the greyscale pre-training process may not only affect initial feature extraction but also later layers, which may have implications for the way the network generalizes during fine-tuning.</p>
+
+<h3>Class Activation and Representation Visualizations</h3>
+
+<p>Visualizations of the final layer outputs for various ImageNet classes revealed stark differences between the RGB and greyscale networks. As expected, the greyscale model’s class outputs were entirely devoid of color, while the RGB model’s outputs were heavily composed of color features. However, color differences alone were not the only distinguishing factor between the two networks.</p>
+<figure class="">
+  <d-figure id="fig-panda">
+    <img src="images/panda.png">
+  </d-figure>
+  <d-figure id="fig-zebra">
+    <img src="images/zebra.png">
+  </d-figure>
+  <figcaption>
+    Normalised maximal class activations for <em>colour</em> (left) and <em>greyscale</em> (right) ImageNet-1K pre-trained networks. 
+  </figcaption>
+</figure>
+<p>For instance, in the visualizations of the Panda and Zebra classes, both networks produced clear object representations, with the animals visible in both cases. However, the RGB network’s outputs contained significant green areas, resembling foliage, which could suggest that the network was using shortcuts related to background scenery for classification. In contrast, the greyscale network’s outputs focused more on textures and features directly related to the animals. For example, the greyscale Panda output contained sharp textures that might indicate foliage or fur, while the greyscale Zebra output was almost entirely composed of zebra-specific textures, with more fine detail than the RGB network's output, which still included green foliage.</p>
+<figure class="">
+  <d-figure id="fig-agama">
+    <img src="images/agama.png">
+  </d-figure>
+  <d-figure id="fig-cockerel">
+    <img src="images/cockeral.png">
+  </d-figure>
+  <d-figure id="fig-pizza">
+    <img src="images/pizza.png">
+  </d-figure>
+  
+  <figcaption>
+    Normalised maximal class activations for <em>colour</em> (left) and <em>greyscale</em> (right) ImageNet-1K pre-trained networks. 
+  </figcaption>
+</figure>
+
+<p>Similarly, in other classes like Agama, Cockerel, and Pizza, the greyscale network produced more detailed outputs, emphasizing finer features such as the highly textured extremities in the Agama class or the distinct head and beak details in the Cockerel class. The RGB network’s outputs, in contrast, contained more blurry color blobs and tended to focus on more zoomed-out, less detailed views.</p>
+
+<p>These findings suggest that the removal of color features may not only increase the detail and precision in texture recognition but also reduce the reliance on color-related shortcuts, potentially leading to more reliable feature extraction in specific applications, such as medical image analysis.</p>
+
+
+    <a class="marker" href="#section-future" id="section-future"><span>6</span></a>
+    <h2>Future Work</h2>
+    <p>While our experiments have demonstrated significant differences between color and greyscale pre-trained models, the fine-tuning of these models onto a medical image classification task remains a key future step. We plan to test the pre-trained weights on chest X-ray (CXR) data for nodule classification, evaluating the models under three different fine-tuning strategies:</p>
+      <ul>
+        <li><em>Final Layer Only:</em> Replace the classification head with the target layer for CXR classification, freezing all other layers.</li>
+        <li><em>Half Network:</em> Replace the classification head and unfreeze the last half of the network for fine-tuning.</li>
+        <li><em>Full Network:</em> Replace the classification head and unfreeze the entire network for fine-tuning.</li>
+      </ul>
+    <p>To assess the generalizability of the fine-tuned models, we will train on one sub-dataset from the CXR data and test across four distinct sub-datasets. Evaluation metrics such as accuracy, AUC, F1 score, precision, and recall will be calculated. Bounding box annotations will also be used to evaluate whether the models correctly focus on the pathological regions of interest, helping us assess the extent to which they avoid shortcut learning.</p>
+
+    <p>This next experiment will allow us to validate whether the observed differences in pre-trained greyscale weights translate into improved model performance and reliability in the medical imaging domain.</p>
+    <!--<h2>A Brief Survey of Techniques</h2>
+     <h2>A Brief Survey of Techniques</h2>
+    <p>Before diving in: if you haven’t encountered t-SNE before, here’s what you need to know about the math behind it.
+      The goal is to take a set of points in a high-dimensional space and find a faithful representation of those points
+      in a lower-dimensional space, typically the 2D plane. The algorithm is non-linear and adapts to the underlying
+      data, performing different transformations on different regions. Those differences can be a major source of
+      confusion.</p>
+    <p>This is the first paragraph of the article. Test a long&thinsp;&mdash;&thinsp;dash -- here it is.</p>
+    <p>Test for owner's possessive. Test for "quoting a passage." And another sentence. Or two. Some flopping fins; for
+      diving.</p>
+    <aside>Some text in an aside, margin notes, etc...</aside>
+    <p>Here's a test of an inline equation <d-math>c = a^2 + b^2</d-math>. Also with configurable katex standards just
+      using inline '$' signs: $$x^2$$ And then there's a block equation:</p>
+    <d-math block>
+      c = \pm \sqrt{ \sum_{i=0}^{n}{a^{222} + b^2}}
+    </d-math>
+    <p>Math can also be quite involved:</p>
+    <d-math block>
+      \frac{1}{\Bigl(\sqrt{\phi \sqrt{5}}-\phi\Bigr) e^{\frac25 \pi}} = 1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}}
+      {1+\frac{e^{-6\pi}} {1+\frac{e^{-8\pi}} {1+\cdots} } } }
+    </d-math>
+    <a class="marker" href="#section-1.1" id="section-1.1"><span>1.1</span></a>
+    <h3>Citations</h3>
+    <p>
+      <d-slider style="width: 200px;"></d-slider>
+    </p>
+    <p>We can<d-cite bibtex-key="mercier2011humans"></d-cite> also cite <d-cite
+        key="gregor2015draw,mercier2011humans,openai2018charter"></d-cite> external publications. <d-cite
+        key="dong2014image,dumoulin2016guide,mordvintsev2015inceptionism"></d-cite>. We should also be testing footnotes
+      <d-footnote>This will become a hoverable footnote. This will become a hoverable footnote. This will become a
+        hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote. This will
+        become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote.
+      </d-footnote>. There are multiple footnotes, and they appear in the appendix<d-footnote>Given I have coded them
+        right. Also, here's math in a footnote: <d-math>c = \sum_0^i{x}</d-math>. Also, a citation. Box-ception<d-cite
+          key='gregor2015draw'></d-cite>!</d-footnote> as well.</p>
+    <a class="marker" href="#section-2" id="section-2"><span>2</span></a>
+    <h2>Displaying code snippets</h2>
+    <p>Some inline javascript:<d-code language="javascript">var x = 25;</d-code>. And here's a javascript code block.
+    </p>
+    <d-code block language="javascript">
+      var x = 25;
+      function(x){
+      return x * x;
+      }
+    </d-code>
+    <p>We also support python.</p>
+    <d-code block language="python">
+      # Python 3: Fibonacci series up to n
+      def fib(n):
+      a, b = 0, 1
+      while a < n: print(a, end=' ' ) a, b=b, a+b </d-code>
+        <p>And a table</p>
+        <table>
+          <thead>
+            <tr>
+              <th>First</th>
+              <th>Second</th>
+              <th>Third</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>23</td>
+              <td>654</td>
+              <td>23</td>
+            </tr>
+            <tr>
+              <td>14</td>
+              <td>54</td>
+              <td>34</td>
+            </tr>
+            <tr>
+              <td>234</td>
+              <td>54</td>
+              <td>23</td>
+            </tr>
+          </tbody>
+        </table>
+        <d-figure id="last-figure"></d-figure>
+        <script>
+          const figure = document.querySelector("d-figure#last-figure");
+          const initTag = document.createElement("span");
+          initTag.textContent = "initialized!"
+          figure.appendChild(initTag);
+          figure.addEventListener("ready", function () {
+            const initTag = figure.querySelector("span");
+            initTag.textContent = "ready"
+            console.log('ready')
+          });
+          figure.addEventListener("onscreen", function () {
+            const initTag = figure.querySelector("span");
+            initTag.textContent = "onscreen"
+            console.log('onscreen')
+          });
+          figure.addEventListener("offscreen", function () {
+            const initTag = figure.querySelector("span");
+            initTag.textContent = "offscreen!"
+            console.log('offscreen')
+          });
+        </script>
+        <p>That's it for the example article!</p> -->
+
+  </d-article>
+
+  <d-appendix>
+
+    <!-- <h3>Contributions</h3>
+    <p>Some text describing who did what.</p> -->
+  <!--   <h3>Reviewers</h3>
+    <p>Some text with links describing who reviewed the article.</p> -->
+
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+  </d-appendix>
+
+  <distill-footer></distill-footer>
+
+</body>

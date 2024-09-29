@@ -5,7 +5,8 @@ export const headerTemplate = `
 distill-header {
   position: relative;
   height: 60px;
-  background-color: hsl(200, 60%, 15%);
+  // background-color: hsl(200, 60%, 15%);
+  background-color: hsl(60, 100%, 25%);
   width: 100%;
   box-sizing: border-box;
   z-index: 2;
@@ -68,12 +69,12 @@ distill-header .nav a {
 <div class="content">
   <a href="/" class="logo">
     ${logo}
-    Distill
+    Sophie Distill
   </a>
   <nav class="nav">
     <a href="/about/">About</a>
-    <a href="/prize/">Prize</a>
-    <a href="/journal/">Submit</a>
+    <!--<a href="/prize/">Prize</a>
+    <a href="/journal/">Submit</a>-->
   </nav>
 </div>
 `;
