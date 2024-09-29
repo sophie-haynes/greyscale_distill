@@ -6,11 +6,6 @@
   "bin": {
     "distill-render": "./bin/render.js"
   },
-  "author": "Shan Carter",
-  "homepage": "https://github.com/distillpub/distill-template#readme",
-  "bugs": {
-    "url": "https://github.com/distillpub/distill-template/issues"
-  },
   "scripts": {
     "dev": "rollup -c rollup.config.dev.js -w",
     "serve": "http-server",
@@ -20,7 +15,7 @@
     "prepare": "npm run build"
   },
   "repository": {
-    "url": "git+https://github.com/distillpub/distill-template.git",
+    "url": "git+https://github.com/sophie-haynes/greyscale_distill.git",
     "type": "git"
   },
   "devDependencies": {
