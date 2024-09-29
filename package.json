@@ -1,12 +1,14 @@
 {
   "name": "distill-template",
   "version": "2.8.0",
-  "description": "Template for creating Distill articles.",
+  "description": "Modified template for creating Distill-like articles.",
   "main": "dist/template.v2.js",
   "bin": {
     "distill-render": "./bin/render.js"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "rollup -c rollup.config.dev.js -w",
     "serve": "http-server",
     "test": "mocha",
@@ -15,7 +17,7 @@
     "prepare": "npm run build"
   },
   "repository": {
-    "url": "git+https://github.com/sophie-haynes/greyscale_distill.git",
+    "url": "git+https://github.com/sophie-haynes/greyscale-distill.git",
     "type": "git"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "chai": "^3.5.0",
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
+    "gh-pages": "^6.1.1",
     "js-yaml": "^3.13.1",
     "jsdom": "11.3.0",
     "jsdom-global": "3.0.2",
