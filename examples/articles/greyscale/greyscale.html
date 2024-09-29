@@ -56,41 +56,41 @@
     <h2>Introduction</h2>
     <p>Transfer learning, where a deep learning model is first trained on a vast dataset to learn fundamental tasks and then partially frozen and fine-tuned on a target dataset, has become the standard approach in many neural network training tasks. This is particularly useful when data availability is low, as the pre-trained model can leverage prior knowledge to improve performance. There is extensive evidence in the literature supporting the efficacy of this technique, particularly in overcoming data scarcity.</p>
 
-    <p>However, when applied to specialized domains like medical imaging, the relevance of generic pre-trained weights becomes questionable. Existing models, often pre-trained on RGB datasets like ImageNet, have been shown to perform poorly when transferred to medical image classification tasks. This misalignment raises concerns about reliability, with models often overfitting on limited training data, relying on spurious correlations, and showing a high risk of bias—rendering them unsuitable for clinical use.</p>
+    <p>However, when applied to specialised domains like medical imaging, the relevance of generic pre-trained weights becomes questionable. Existing models, often pre-trained on RGB datasets like ImageNet, have been shown to perform poorly when transferred to medical image classification tasks. This misalignment raises concerns about reliability, with models often overfitting on limited training data, relying on spurious correlations, and showing a high risk of bias—rendering them unsuitable for clinical use.</p>
 
-    <p>In this study, we seek to improve the reliability of medical image classifiers by using pre-trained weights that are more closely aligned with the grayscale nature of medical imagery. Additionally, we explore interpretative methods to compare the network weights and gain insight into how different representations impact model performance. We hypothesize that the performance gains typically seen with RGB-based ImageNet weights do not transfer effectively to grayscale medical images due to significant differences in feature representations and the loss of color features, which can lead to extensive neuron death.</p>
+    <p>In this study, we seek to improve the reliability of medical image classifiers by using pre-trained weights that are more closely aligned with the grayscale nature of medical imagery. Additionally, we explore interpretative methods to compare the network weights and gain insight into how different representations impact model performance. We hypothesise that the performance gains typically seen with RGB-based ImageNet weights do not transfer effectively to grayscale medical images due to significant differences in feature representations and the loss of colour features, which can lead to extensive neuron death.</p>
 
     <a class="marker" href="#section-method" id="section-method"><span>3</span></a>
     <h2>Methodology</h2>
-    <p>For this study, we used the official PyTorch recipe to pre-train the greyscale ResNet50 model. ResNet50 was chosen due to its widespread use in medical image literature, where it has consistently demonstrated good performance. To create the greyscaled ImageNet-1K dataset, we modified the data loader to include a greyscale transformation before applying all other image transforms. Importantly, we preserved the three-channel structure in the greyscale images to ensure that the resulting models (color and greyscale) were maximally comparable.</p>
+    <p>For this study, we used the official PyTorch recipe to pre-train the greyscale ResNet50 model. ResNet50 was chosen due to its widespread use in medical image literature, where it has consistently demonstrated good performance. To create the greyscaled ImageNet-1K dataset, we modified the data loader to include a greyscale transformation before applying all other image transforms. Importantly, we preserved the three-channel structure in the greyscale images to ensure that the resulting models (colour and greyscale) were maximally comparable.</p>
 
     <h3>Model Pre-training and Fine-tuning</h3>
-    <p>ResNet50 models were pre-trained using the greyscaled ImageNet-1K dataset. Due to computational constraints, only the greyscale network was pre-trained from scratch, while the official pre-trained color ImageNet-1K weights were used for comparison. The training recipe used for the greyscale model was identical to that used for the official PyTorch ImageNet-1K weights.</p>
+    <p>ResNet50 models were pre-trained using the greyscaled ImageNet-1K dataset. Due to computational constraints, only the greyscale network was pre-trained from scratch, while the official pre-trained colour ImageNet-1K weights were used for comparison. The training recipe used for the greyscale model was identical to that used for the official PyTorch ImageNet-1K weights.<d-cite bibtex-key="PyTorch"></d-cite></p>
 
     <!-- <p>We have planned the following fine-tuning strategies for the chest X-ray (CXR) nodule classification task, though the models have not yet been fine-tuned:
 
     Final Layer Only: Replace the classification head with the target layer for CXR classification and freeze all other layers.
     Half Network: Replace the classification head and unfreeze the last half of the network for fine-tuning.
     Full Network: Replace the classification head and unfreeze the entire network for fine-tuning. -->
-  <!--   <h3>Experimental Design and Generalizability Evaluation</h3>
-    <p>To assess the generalizability of the pre-trained models, we designed an evaluation process using a CXR dataset composed of four distinct sub-datasets. The models were trained on one of the sub-datasets and tested across all four to evaluate their performance in unseen domains. Standard evaluation metrics were calculated, including accuracy, AUC, F1 score, precision, and recall. Additionally, bounding box annotations in the dataset were used to assess whether the models were identifying relevant pathological regions or relying on spurious correlations. This allowed us to explore whether the models exhibited shortcut learning.</p> -->
+  <!--   <h3>Experimental Design and Generalisability Evaluation</h3>
+    <p>To assess the generalisability of the pre-trained models, we designed an evaluation process using a CXR dataset composed of four distinct sub-datasets. The models were trained on one of the sub-datasets and tested across all four to evaluate their performance in unseen domains. Standard evaluation metrics were calculated, including accuracy, AUC, F1 score, precision, and recall. Additionally, bounding box annotations in the dataset were used to assess whether the models were identifying relevant pathological regions or relying on spurious correlations. This allowed us to explore whether the models exhibited shortcut learning.</p> -->
 
     <h3>Control Experiment for Statistical Significance</h3>
-    <p>To account for possible differences in hardware or environment between the color and greyscale models, we conducted a control experiment using CIFAR datasets. In this toy experiment, both greyscale and color models were trained using the same setup, and weight differences between the two were compared using the Kolmogorov-Smirnov test. The results showed statistically significant differences between the distributions of the color and greyscale models, indicating that the fundamental differences observed are due to the color of the weights, not environmental factors. The Kruskal-Wallis test further confirmed that intra-group differences (within the color or greyscale models) were not statistically significant, while inter-group differences (between the color and greyscale models) were statistically significant.</p>
+    <p>To account for possible differences in hardware or environment between the colour and greyscale models, we conducted a control experiment using CIFAR datasets. <d-cite bibtex-key="Krizhevsky2009"></d-cite> In this toy experiment, both greyscale and colour models were trained using the same setup, and weight differences between the two were compared using the Kolmogorov-Smirnov test. The results showed statistically significant differences between the distributions of the colour and greyscale models, indicating that the fundamental differences observed are due to the colour of the weights, not environmental factors. The Kruskal-Wallis test further confirmed that intra-group differences (within the colour or greyscale models) were not statistically significant, while inter-group differences (between the colour and greyscale models) were statistically significant.</p>
     
     <h3>Weight and Feature Analysis</h3>
-    <p>To further investigate differences between the color and greyscale networks, we generated heatmaps visualizing the differences in weights across the entire network. Three separate heatmaps were created to show differences in:
+    <p>To further investigate differences between the colour and greyscale networks, we generated heatmaps visualising the differences in weights across the entire network. Three separate heatmaps were created to show differences in:
     <ul>
       <li>Convolutional layer weights.</li>
-      <li>Batch normalization weights.</li>
-      <li>Batch normalization biases.</li>
+      <li>Batch normalisation weights.</li>
+      <li>Batch normalisation biases.</li>
     </ul>
     <p>These heatmaps provided a layer-by-layer comparison, allowing us to pinpoint where the most significant differences occurred between the models.</p>
 
-    <p>We also performed a visual analysis of the input filters of each model to determine if the fundamental building blocks of the network differed. Each ResNet50 model contains 64 filters in the first layer, with dimensions of 7x7x3. We visualized these filters to compare their structure and found that color and greyscale models differed in their initial feature extraction.</p>
+    <p>We also performed a visual analysis of the input filters of each model to determine if the fundamental building blocks of the network differed. Each ResNet50 model contains 64 filters in the first layer, with dimensions of 7x7x3. We visualised these filters to compare their structure and found that colour and greyscale models differed in their initial feature extraction.</p>
 
     <h3>Class Activation and Representation Analysis</h3>
-    <p>Finally, we visualized the final layer outputs of the ImageNet models for various classes, using a method from Chris Olah et al., which generates outputs that maximize target neuron activations. This allowed us to observe visual differences in how the two models represented various ImageNet classes. Additionally, we calculated the mean layer activations to compare representational differences over the layers of each network, providing further insights into the depth of feature extraction differences.</p>
+    <p>Finally, we visualised the final layer outputs of the ImageNet models for various classes, using a method from Chris Olah et al., which generates outputs that maximise target neuron activations. This allowed us to observe visual differences in how the two models represented various ImageNet classes. Additionally, we calculated the mean layer activations to compare representational differences over the layers of each network, providing further insights into the depth of feature extraction differences.</p>
 
     <a class="marker" href="#section-experiments" id="section-experiments"><span>4</span></a>
     <h2>Experiments and Analysis</h2>
@@ -116,7 +116,7 @@
         Manually mapped ImageNet filters between the <em>Greyscale</em> (blue box) and <em>Colour</em> (orange box) networks. 
       </figcaption>
     </figure>
-    <!-- <p>The most immediate and visible difference between the first-layer filters of the RGB and greyscale pre-trained networks was the presence of color in the RGB filters. In contrast, the greyscale network filters were entirely devoid of color, as expected. When comparing the filters between the two networks, most could be mapped to each other, with the RGB network containing repeated filters in different colors. This suggests that the color model captures multiple redundant representations of the same pattern, just in different color variations.</p> -->
+    <!-- <p>The most immediate and visible difference between the first-layer filters of the RGB and greyscale pre-trained networks was the presence of colour in the RGB filters. In contrast, the greyscale network filters were entirely devoid of colour, as expected. When comparing the filters between the two networks, most could be mapped to each other, with the RGB network containing repeated filters in different colours. This suggests that the colour model captures multiple redundant representations of the same pattern, just in different colour variations.</p> -->
     <p>When comparing the filters between the two networks, most could be mapped to each other, with the RGB network containing repeated filters in different colours. This suggests that the colour model captures multiple redundant representations of the same pattern in different colour variations. However, not all filters can be mapped between the networks. Nine of the 46 non-empty greyscale model filters were unique from the colour network filters. The colour model, which has 62 non-empty filters, contains eleven filters not found in the greyscale network. However, several filters are representations of the same pattern, just in different colour variations. This behaviour is observed throughout the colour network filters.</p>
     <p>These visual differences in the first-layer filters suggest that the initial building blocks passed into the network differ significantly, even though both models were trained on the same ImageNet dataset. This suggests that the absence of colour in the greyscale model forces the network to focus on different types of features. Furthermore, despite the reduced number of active filters, the greyscale network introduced new filter patterns not present in the RGB network, indicating that it may capture different structural features. Combined, this may lead to learning more relevant domain-specific features in applications like medical image classification.</p>
 
@@ -131,11 +131,11 @@
          
       </figcaption>
     </figure>
-    <p>Additionally, the batch normalization weights and biases showed notable differences in the final layers, particularly in the third batch normalization block (batch norm 3). This suggests that the greyscale pre-training process may not only affect initial feature extraction but also later layers, which may have implications for the way the network generalizes during fine-tuning.</p>
+    <p>Additionally, the batch normalisation weights and biases showed notable differences in the final layers, particularly in the third batch normalisation block (batch norm 3). This suggests that the greyscale pre-training process may not only affect initial feature extraction but also later layers, which may have implications for the way the network generalises during fine-tuning.</p>
 
-<h3>Class Activation and Representation Visualizations</h3>
+<h3>Class Activation and Representation Visualisations</h3>
 
-<p>Visualizations of the final layer outputs for various ImageNet classes revealed stark differences between the RGB and greyscale networks. As expected, the greyscale model’s class outputs were entirely devoid of color, while the RGB model’s outputs were heavily composed of color features. However, color differences alone were not the only distinguishing factor between the two networks.</p>
+<p>Visualisations of the final layer outputs for various ImageNet classes revealed stark differences between the RGB and greyscale networks. As expected, the greyscale model’s class outputs were entirely devoid of colour, while the RGB model’s outputs were heavily composed of colour features. However, colour differences alone were not the only distinguishing factor between the two networks.</p>
 <figure class="">
   <d-figure id="fig-panda">
     <img src="images/panda.png">
@@ -147,7 +147,7 @@
     Normalised maximal class activations for <em>colour</em> (left) and <em>greyscale</em> (right) ImageNet-1K pre-trained networks. 
   </figcaption>
 </figure>
-<p>For instance, in the visualizations of the Panda and Zebra classes, both networks produced clear object representations, with the animals visible in both cases. However, the RGB network’s outputs contained significant green areas, resembling foliage, which could suggest that the network was using shortcuts related to background scenery for classification. In contrast, the greyscale network’s outputs focused more on textures and features directly related to the animals. For example, the greyscale Panda output contained sharp textures that might indicate foliage or fur, while the greyscale Zebra output was almost entirely composed of zebra-specific textures, with more fine detail than the RGB network's output, which still included green foliage.</p>
+<p>For instance, in the visualisations of the Panda and Zebra classes, both networks produced clear object representations, with the animals visible in both cases. However, the RGB network’s outputs contained significant green areas, resembling foliage, which could suggest that the network was using shortcuts related to background scenery for classification. In contrast, the greyscale network’s outputs focused more on textures and features directly related to the animals. For example, the greyscale Panda output contained sharp textures that might indicate foliage or fur, while the greyscale Zebra output was almost entirely composed of zebra-specific textures, with more fine detail than the RGB network's output, which still included green foliage.</p>
 <figure class="">
   <d-figure id="fig-agama">
     <img src="images/agama.png">
@@ -164,20 +164,20 @@
   </figcaption>
 </figure>
 
-<p>Similarly, in other classes like Agama, Cockerel, and Pizza, the greyscale network produced more detailed outputs, emphasizing finer features such as the highly textured extremities in the Agama class or the distinct head and beak details in the Cockerel class. The RGB network’s outputs, in contrast, contained more blurry color blobs and tended to focus on more zoomed-out, less detailed views.</p>
+<p>Similarly, in other classes like Agama, Cockerel, and Pizza, the greyscale network produced more detailed outputs, emphasising finer features such as the highly textured extremities in the Agama class or the distinct head and beak details in the Cockerel class. The RGB network’s outputs, in contrast, contained more blurry colour blobs and tended to focus on more zoomed-out, less detailed views.</p>
 
-<p>These findings suggest that the removal of color features may not only increase the detail and precision in texture recognition but also reduce the reliance on color-related shortcuts, potentially leading to more reliable feature extraction in specific applications, such as medical image analysis.</p>
+<p>These findings suggest that the removal of colour features may not only increase the detail and precision in texture recognition but also reduce the reliance on colour-related shortcuts, potentially leading to more reliable feature extraction in specific applications, such as medical image analysis.</p>
 
 
     <a class="marker" href="#section-future" id="section-future"><span>6</span></a>
     <h2>Future Work</h2>
-    <p>While our experiments have demonstrated significant differences between color and greyscale pre-trained models, the fine-tuning of these models onto a medical image classification task remains a key future step. We plan to test the pre-trained weights on chest X-ray (CXR) data for nodule classification, evaluating the models under three different fine-tuning strategies:</p>
+    <p>While our experiments have demonstrated significant differences between colour and greyscale pre-trained models, the fine-tuning of these models onto a medical image classification task remains a key future step. We plan to test the pre-trained weights on chest X-ray (CXR) data for nodule classification, evaluating the models under three different fine-tuning strategies:</p>
       <ul>
         <li><em>Final Layer Only:</em> Replace the classification head with the target layer for CXR classification, freezing all other layers.</li>
         <li><em>Half Network:</em> Replace the classification head and unfreeze the last half of the network for fine-tuning.</li>
         <li><em>Full Network:</em> Replace the classification head and unfreeze the entire network for fine-tuning.</li>
       </ul>
-    <p>To assess the generalizability of the fine-tuned models, we will train on one sub-dataset from the CXR data and test across four distinct sub-datasets. Evaluation metrics such as accuracy, AUC, F1 score, precision, and recall will be calculated. Bounding box annotations will also be used to evaluate whether the models correctly focus on the pathological regions of interest, helping us assess the extent to which they avoid shortcut learning.</p>
+    <p>To assess the generalisability of the fine-tuned models, we will train on one sub-dataset from the CXR data and test across four distinct sub-datasets. Evaluation metrics such as accuracy, AUC, F1 score, precision, and recall will be calculated. Bounding box annotations will also be used to evaluate whether the models correctly focus on the pathological regions of interest, helping us assess the extent to which they avoid shortcut learning.</p>
 
     <p>This next experiment will allow us to validate whether the observed differences in pre-trained greyscale weights translate into improved model performance and reliability in the medical imaging domain.</p>
     <!--<h2>A Brief Survey of Techniques</h2>
@@ -262,7 +262,7 @@
         <script>
           const figure = document.querySelector("d-figure#last-figure");
           const initTag = document.createElement("span");
-          initTag.textContent = "initialized!"
+          initTag.textContent = "initialised!"
           figure.appendChild(initTag);
           figure.addEventListener("ready", function () {
             const initTag = figure.querySelector("span");
