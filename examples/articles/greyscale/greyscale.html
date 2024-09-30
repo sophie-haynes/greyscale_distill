@@ -76,7 +76,16 @@
     <p>To assess the generalisability of the pre-trained models, we designed an evaluation process using a CXR dataset composed of four distinct sub-datasets. The models were trained on one of the sub-datasets and tested across all four to evaluate their performance in unseen domains. Standard evaluation metrics were calculated, including accuracy, AUC, F1 score, precision, and recall. Additionally, bounding box annotations in the dataset were used to assess whether the models were identifying relevant pathological regions or relying on spurious correlations. This allowed us to explore whether the models exhibited shortcut learning.</p> -->
 
     <h3>Control Experiment for Statistical Significance</h3>
-    <p>To account for possible differences in hardware or environment between the colour and greyscale models, we conducted a control experiment using CIFAR datasets. <d-cite bibtex-key="Krizhevsky2009"></d-cite> In this toy experiment, both greyscale and colour models were trained using the same setup, and weight differences between the two were compared using the Kolmogorov-Smirnov test. The results showed statistically significant differences between the distributions of the colour and greyscale models, indicating that the fundamental differences observed are due to the colour of the weights, not environmental factors. The Kruskal-Wallis test further confirmed that intra-group differences (within the colour or greyscale models) were not statistically significant, while inter-group differences (between the colour and greyscale models) were statistically significant.</p>
+    <p>To account for possible differences in hardware or environment between the colour and greyscale models, we conducted a control experiment using CIFAR datasets. <d-cite bibtex-key="Krizhevsky2009"></d-cite> In this toy experiment, both greyscale and colour models were trained using the same setup, and weight differences between the two were visualised and compared using the Kolmogorov-Smirnov test. 
+    <figure class="">
+      <d-figure id="fig-heatmaps">
+      <img src="images/cifar_weight_differences.png">
+      </d-figure>
+      <figcaption>
+         Line plot comparing weight differences of the <em>Colour</em> (red) and <em>Greyscale</em> (blue) CIFAR models. Each line displays the difference in weights from colour model 1, and all other models.
+      </figcaption>
+    </figure>
+    <p>After reviewing the plot distributions, we see that the colour and greyscale models display distinctly different distributions from each other while maintaining similar intra-group distributions. These observations are supported by the results of the statistical tests. Comparing the shapes of the two group distributions with the Kolmogorov-Smirnov test produced a p-value below 0.05, indicating a statistically significant difference in the overall shapes of the two group distributions. Furthermore, Kruskal-Wallis tests confirmed that intra-group differences (within the colour or greyscale models) were not statistically significant (p-values more than 0.05), while inter-group differences (between the colour and greyscale models) were statistically significant (below p-values below 0.05). </p>
     
     <h3>Weight and Feature Analysis</h3>
     <p>To further investigate differences between the colour and greyscale networks, we generated heatmaps visualising the differences in weights across the entire network. Three separate heatmaps were created to show differences in:
