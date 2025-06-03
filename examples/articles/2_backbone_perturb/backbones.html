@@ -1,0 +1,71 @@
+<!--
+  Copyright 2018 The Distill Template Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!doctype html>
+
+<head>
+  <script src="../../../dist/template.v2.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf8">
+</head>
+
+<body>
+  <distill-header></distill-header>
+  <d-front-matter>
+    <script id='distill-front-matter' type="text/json">{
+    "title": "From Colour to Grey (2): Perturbation Robustness from Greyscale Pre-training",
+    "description": "Greyscale pre-training doesn't just cut memory costs, it strengthens model resilience. We explore how 1-channel backbones can deliver both efficiency and robustness across visual perturbations.",
+    "published": "Jun 3, 2025",
+    "authors": [
+      {
+        "author":"Sophie Crawford Haynes",
+        "authorURL":"https://scholar.google.com/citations?user=qoJcQhoAAAAJ",
+        "affiliations": [{"name": "Robert Gordon University"}]
+      }
+    ],
+    "katex": {
+      "delimiters": [
+        {"left": "$$", "right": "$$", "display": false}
+      ]
+    }
+  }</script>
+  </d-front-matter>
+  <d-title>
+    <figure style="grid-column: page; margin: 1rem 0;"><img src="images/filter_grouping.svg"
+        style="width:100%; border: 0px solid rgba(0, 0, 0, 0.2);" /></figure>
+    <!-- <p>We often think of Momentum<d-cite key="mercier2011humans"></d-cite> as a means of dampening oscillations and
+      speeding up the iterations, leading to faster convergence. But it has other interesting behavior. It allows a
+      larger range of step-sizes to be used, and creates its own oscillations. What is going on?</p> -->
+      <p>While our greyscale pre-training was originally motivated by domain alignment for medical imagery, its broader benefits may have been underestimated.  In this continuation of our investigation into greyscale backbones, we explore the unexpected advantages of removing colour, specifically in terms of efficiency and robustness, prior to any downstream transfer. We compare ResNet-50 models trained on ImageNet-1K using RGB, 3-channel greyscale, and 1-channel greyscale inputs, isolating colour representation as the only difference between them. 
+      We first examine practical performance: the 1-channel model completes epochs faster and consumes significantly less memory, enabling more efficient training. Beyond efficiency, we assess robustness using the model-vs-human benchmark <d-cite bibtex-key="Geirhos2021"></d-cite>, and find that greyscale variants, particularly the 1-channel model, often outperform their RGB counterpart under a wide range of visual perturbations, ranging from noise and colour shifts to texture and shape distortions. These findings challenge the assumption that colour is always a beneficial signal in pre-training and raise the possibility that, in some cases, it may hinder robustness. With only a small drop in top-1 accuracy (~2%), but substantial gains in perturbation resilience and training efficiency, greyscale pre-training may offer a compelling alternative for building more efficient and robust vision systems well beyond medical imaging.</p>
+  </d-title>
+  <d-byline></d-byline>
+  <d-article>
+    
+  </d-article>
+
+  <d-appendix>
+
+    <!-- <h3>Contributions</h3>
+    <p>Some text describing who did what.</p> -->
+  <!--   <h3>Reviewers</h3>
+    <p>Some text with links describing who reviewed the article.</p> -->
+
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+  </d-appendix>
+
+  <distill-footer></distill-footer>
+
+</body>
