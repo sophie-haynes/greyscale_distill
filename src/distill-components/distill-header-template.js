@@ -72,7 +72,7 @@ distill-header .nav a {
     Sophie Distill
   </a>
   <nav class="nav">
-    <a href="/about/">About</a>
+    <a href="/examples/about/">About</a>
     <!--<a href="/prize/">Prize</a>
     <a href="/journal/">Submit</a>-->
   </nav>

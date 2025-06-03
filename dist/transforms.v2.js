@@ -12902,7 +12902,7 @@ distill-header .nav a {
     Sophie Distill
   </a>
   <nav class="nav">
-    <a href="/about/">About</a>
+    <a href="/examples/about/">About</a>
     <!--<a href="/prize/">Prize</a>
     <a href="/journal/">Submit</a>-->
   </nav>
@@ -13065,7 +13065,7 @@ distill-header .nav a {
     Sophie Distill</a> is a personal blog of <a href="https://distill.pub/">Distill</a>-like research articles dedicated to reliable AI.
 
   <div class="nav">
-    <a href="sophie-distill.space/about/">About</a>
+    <a href="/examples/about/">About</a>
     <a href="https://github.com/sophie-haynes">GitHub</a>
     <!--<a href="https://distill.pub/journal/">Submit</a>
     <a href="https://distill.pub/prize/">Prize</a>
